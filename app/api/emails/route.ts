@@ -6,14 +6,23 @@ export async function GET(req: Request) {
   await connectDB();
   const url = new URL(req.url);
   const to = url.searchParams.get("to");
+  const from = url.searchParams.get("from");
 
-  if (!to) {
-    // client didn't specify recipient; return empty array or 400
-    return NextResponse.json([], { status: 400 });
+  const result: any = {};
+
+  if (to) {
+    result.inbox = await Email.find({ to }).sort({ createdAt: -1 });
+  }
+  if (from) {
+    result.sent = await Email.find({ from }).sort({ createdAt: -1 });
   }
 
-  const emails = await Email.find({ to }).sort({ createdAt: -1 });
-  return NextResponse.json(emails);
+  // if neither parameter provided, treat as bad request
+  if (!to && !from) {
+    return NextResponse.json(result, { status: 400 });
+  }
+
+  return NextResponse.json(result);
 }
 
 export async function PATCH(req: Request) {
