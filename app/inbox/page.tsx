@@ -4,22 +4,60 @@ import { useEffect, useState } from "react";
 export default function Inbox() {
   const [emails, setEmails] = useState<any[]>([]);
 
+  const fetchEmails = async () => {
+    const res = await fetch("/api/emails");
+    const data = await res.json();
+    setEmails(data);
+  };
+
   useEffect(() => {
-    fetch("/api/emails")
-      .then((res) => res.json())
-      .then(setEmails);
+    fetchEmails();
+    const interval = setInterval(fetchEmails, 5000);
+    return () => clearInterval(interval);
   }, []);
 
+  const markSeen = async (id: string) => {
+    await fetch("/api/emails", {
+      method: "PATCH",
+      body: JSON.stringify({ id }),
+    });
+    fetchEmails();
+  };
+
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Inbox</h1>
-      {emails.map((email) => (
+    <div className="max-w-3xl mx-auto">
+      <h1 className="text-2xl mb-6">Inbox</h1>
+
+      {emails.map((mail) => (
         <div
-          key={email._id}
-          className="bg-white shadow p-4 mb-3 rounded"
+          key={mail._id}
+          className={`card mb-4 ${
+            !mail.seen ? "new-mail" : ""
+          }`}
         >
-          <h2 className="font-semibold">{email.subject}</h2>
-          <p>{email.from}</p>
+          <div className="flex justify-between">
+            <h2 className="font-semibold">{mail.subject}</h2>
+            <span className="text-sm text-gray-400">
+              {new Date(mail.createdAt).toLocaleTimeString()}
+            </span>
+          </div>
+
+          <p className="text-sm text-gray-400 mb-2">
+            From: {mail.from}
+          </p>
+
+          <p className="fade-decrypt">
+            {mail.message}
+          </p>
+
+          {!mail.seen && (
+            <button
+              onClick={() => markSeen(mail._id)}
+              className="mt-3 text-blue-400"
+            >
+              Mark as Seen
+            </button>
+          )}
         </div>
       ))}
     </div>

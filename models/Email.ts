@@ -6,6 +6,7 @@ const EmailSchema = new mongoose.Schema({
   subject: String,
   message: String,
   signature: String,
+  seen: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now },
 });
 

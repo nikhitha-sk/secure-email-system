@@ -8,15 +8,17 @@ import { signMessage } from "@/lib/signature";
 export async function POST(req: Request) {
   await connectDB();
 
-  const { from, to, subject, message } = await req.json();
+  const { to, subject, message } = await req.json();
 
-  const sender = await User.findOne({ email: from });
+  const senderEmail = req.headers.get("x-user-email"); // logged in user
+
+  const sender = await User.findOne({ email: senderEmail });
 
   const hash = createHash(message);
   const signature = signMessage(hash, sender.privateKey);
 
   await Email.create({
-    from,
+    from: senderEmail,
     to,
     subject,
     message,

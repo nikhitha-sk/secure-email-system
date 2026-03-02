@@ -23,24 +23,28 @@ export default function Login() {
     const data = await res.json();
 
     if (data.message) {
-      alert("Login Successful!");
-      router.push("/inbox");
+      localStorage.setItem("user", form.email);
+
+      alert("Login Successful");
+
+      router.push("/");
+      router.refresh();
     } else {
       alert("Invalid credentials");
     }
   };
 
   return (
-    <div className="flex justify-center mt-20">
-      <div className="bg-white p-8 shadow-md rounded w-96">
-        <h2 className="text-2xl font-bold mb-6 text-center">
-          Login
+    <div className="flex justify-center items-center mt-24">
+      <div className="card w-96">
+        <h2 className="text-2xl font-bold text-center mb-6">
+          Secure Login
         </h2>
 
         <input
           type="email"
           placeholder="Email"
-          className="w-full border p-2 mb-4 rounded"
+          className="w-full mb-4"
           onChange={(e) =>
             setForm({ ...form, email: e.target.value })
           }
@@ -49,7 +53,7 @@ export default function Login() {
         <input
           type="password"
           placeholder="Password"
-          className="w-full border p-2 mb-4 rounded"
+          className="w-full mb-6"
           onChange={(e) =>
             setForm({ ...form, password: e.target.value })
           }
@@ -57,7 +61,7 @@ export default function Login() {
 
         <button
           onClick={handleLogin}
-          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+          className="w-full bg-blue-600 hover:bg-blue-700 py-2 rounded"
         >
           Login
         </button>

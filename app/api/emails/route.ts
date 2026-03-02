@@ -7,3 +7,10 @@ export async function GET() {
   const emails = await Email.find().sort({ createdAt: -1 });
   return NextResponse.json(emails);
 }
+
+export async function PATCH(req: Request) {
+  await connectDB();
+  const { id } = await req.json();
+  await Email.findByIdAndUpdate(id, { seen: true });
+  return NextResponse.json({ message: "Updated" });
+}

@@ -1,48 +1,68 @@
-// app/page.tsx
+"use client";
 
-import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+  const [user, setUser] = useState<string | null>(null);
+  const [showKeys, setShowKeys] = useState(false);
+  const [keys, setKeys] = useState<any>(null);
+
+  useEffect(() => {
+    const loggedUser = localStorage.getItem("user");
+    setUser(loggedUser);
+
+    if (loggedUser) {
+      fetch("/api/login?email=" + loggedUser)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.publicKey) {
+            setKeys(data);
+          }
+        });
+    }
+  }, []);
+
   return (
-    <div className="flex flex-col items-center justify-center text-center mt-20">
-      <h1 className="text-4xl font-bold text-gray-800 mb-4">
+    <div className="max-w-4xl mx-auto mt-16 text-center">
+      <h1 className="text-4xl font-bold text-blue-400 mb-6">
         Digital Signature Based Secure Email System
       </h1>
 
-      <p className="text-gray-600 max-w-xl mb-8">
-        This system ensures <strong>Authenticity</strong> and{" "}
-        <strong>Integrity</strong> of emails using RSA Digital Signatures
-        and SHA-256 hashing. Even a single character change will be detected.
+      <p className="text-gray-400 mb-10">
+        Secure email communication using RSA Digital Signatures and
+        SHA-256 hashing. Ensures authenticity and data integrity.
       </p>
 
-      <div className="space-x-4">
-        <Link
-          href="/register"
-          className="bg-red-500 text-white px-6 py-3 rounded shadow hover:bg-red-600"
-        >
-          Get Started
-        </Link>
+      {user ? (
+        <div>
+          <p className="text-green-400 mb-4">
+            Logged in as: {user}
+          </p>
 
-        <Link
-          href="/inbox"
-          className="bg-blue-500 text-white px-6 py-3 rounded shadow hover:bg-blue-600"
-        >
-          Go to Inbox
-        </Link>
-      </div>
+          <button
+            onClick={() => setShowKeys(!showKeys)}
+            className="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded transition"
+          >
+            {showKeys ? "Hide My Keys" : "Show My Keys"}
+          </button>
 
-      <div className="mt-12 bg-white shadow-md p-6 rounded max-w-xl">
-        <h2 className="text-xl font-semibold mb-4">Project Features</h2>
+          {showKeys && keys && (
+            <div className="card mt-6 text-left text-xs break-all">
+              <p className="text-blue-400 mb-2">Public Key:</p>
+              <p>{keys.publicKey}</p>
 
-        <ul className="text-left list-disc list-inside text-gray-700 space-y-2">
-          <li>User Registration & Login</li>
-          <li>Automatic RSA Key Generation</li>
-          <li>SHA-256 Message Hashing</li>
-          <li>Digital Signature Creation</li>
-          <li>Public Key Verification</li>
-          <li>Tampering Detection</li>
-        </ul>
-      </div>
+              <p className="text-red-400 mt-6 mb-2">
+                Private Key:
+              </p>
+              <p>{keys.privateKey}</p>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="text-gray-400">
+          Please login to access your secure mailbox.
+        </div>
+      )}
     </div>
   );
 }

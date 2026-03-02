@@ -1,45 +1,36 @@
-// app/layout.tsx
-
+"use client";
 import "./globals.css";
 import Link from "next/link";
-
-export const metadata = {
-  title: "Secure Email System",
-  description: "Digital Signature Based Secure Email System",
-};
+import { useEffect, useState } from "react";
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const [user, setUser] = useState<string | null>(null);
+
+  useEffect(() => {
+    setUser(localStorage.getItem("user"));
+  }, []);
+
   return (
-    <html lang="en">
-      <body className="bg-gray-100">
-        {/* Top Navbar */}
-        <nav className="bg-white shadow-md px-6 py-4 flex justify-between items-center">
-          <Link href="/" className="text-xl font-bold text-red-500">
+    <html>
+      <body>
+        <nav className="flex justify-between p-4 bg-slate-900 border-b border-slate-700">
+          <Link href="/" className="text-xl font-bold text-blue-400">
             SecureMail
           </Link>
 
-          <div className="space-x-6">
-            <Link href="/inbox" className="hover:text-blue-600">
-              Inbox
-            </Link>
-            <Link href="/compose" className="hover:text-blue-600">
-              Compose
-            </Link>
-            <Link href="/login" className="hover:text-blue-600">
-              Login
-            </Link>
-            <Link href="/register" className="hover:text-blue-600">
-              Register
-            </Link>
+          <div className="space-x-4">
+            {user && <Link href="/inbox">Inbox</Link>}
+            {user && <Link href="/compose">Compose</Link>}
+            {!user && <Link href="/login">Login</Link>}
+            {!user && <Link href="/register">Register</Link>}
           </div>
         </nav>
 
-        {/* Main Content */}
-        <main className="min-h-screen p-6">{children}</main>
+        <main className="p-6">{children}</main>
       </body>
     </html>
   );
