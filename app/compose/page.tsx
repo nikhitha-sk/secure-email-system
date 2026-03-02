@@ -46,10 +46,10 @@ export default function Compose() {
         setSent(true);
         setTimeout(() => router.push("/inbox"), 2000);
       } else {
-        setError("Failed to send email. Please try again.");
+        setError("Failed to send.");
       }
     } catch {
-      setError("Something went wrong. Please try again.");
+      setError("Something went wrong.");
     } finally {
       setLoading(false);
     }
@@ -62,10 +62,10 @@ export default function Compose() {
           <ShieldCheckIcon className="w-6 h-6" />
         </div>
         <h2 className="text-lg font-semibold text-foreground mb-1">
-          Message sent securely
+          Sent
         </h2>
         <p className="text-sm text-muted-foreground">
-          Signed with your digital signature and encrypted. Redirecting...
+          Redirecting to inbox...
         </p>
       </div>
     );
@@ -73,15 +73,13 @@ export default function Compose() {
 
   return (
     <div className="max-w-2xl mx-auto animate-fade-in">
-      {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-foreground">New Message</h1>
+        <h1 className="text-2xl font-semibold text-foreground">Compose</h1>
         <p className="text-sm text-muted-foreground mt-0.5">
-          Messages are digitally signed and encrypted with RSA
+          Encrypted and signed with RSA
         </p>
       </div>
 
-      {/* Compose Form */}
       <form onSubmit={sendEmail} className="card p-0 overflow-hidden">
         {error && (
           <div className="mx-5 mt-5 p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-sm text-destructive">
@@ -89,7 +87,7 @@ export default function Compose() {
           </div>
         )}
 
-        {/* To Field */}
+        {/* To */}
         <div className="flex items-center border-b border-border">
           <label htmlFor="to" className="px-5 text-sm font-medium text-muted-foreground w-20 flex-shrink-0">
             To
@@ -97,7 +95,7 @@ export default function Compose() {
           <input
             id="to"
             type="email"
-            placeholder="recipient@example.com"
+            placeholder="Recipient email"
             value={form.to}
             onChange={(e) => setForm({ ...form, to: e.target.value })}
             className="flex-1 border-0 rounded-none bg-transparent focus:ring-0 focus:shadow-none py-3.5"
@@ -107,7 +105,6 @@ export default function Compose() {
           />
         </div>
 
-        {/* Subject Field */}
         <div className="flex items-center border-b border-border">
           <label htmlFor="subject" className="px-5 text-sm font-medium text-muted-foreground w-20 flex-shrink-0">
             Subject
@@ -115,7 +112,7 @@ export default function Compose() {
           <input
             id="subject"
             type="text"
-            placeholder="What is this about?"
+            placeholder="Subject"
             value={form.subject}
             onChange={(e) => setForm({ ...form, subject: e.target.value })}
             className="flex-1 border-0 rounded-none bg-transparent focus:ring-0 focus:shadow-none py-3.5"
@@ -124,10 +121,9 @@ export default function Compose() {
           />
         </div>
 
-        {/* Message Body */}
         <div className="p-5">
           <textarea
-            placeholder="Write your message..."
+            placeholder="Message"
             rows={10}
             value={form.message}
             onChange={(e) => setForm({ ...form, message: e.target.value })}
@@ -137,11 +133,10 @@ export default function Compose() {
           />
         </div>
 
-        {/* Footer */}
         <div className="flex items-center justify-between px-5 py-3 border-t border-border bg-muted/30">
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <ShieldCheckIcon className="w-3.5 h-3.5 text-accent" />
-            <span>Signed & encrypted</span>
+            <span>Encrypted</span>
           </div>
 
           <button
