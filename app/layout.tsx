@@ -2,7 +2,7 @@
 import "./globals.css";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 export default function RootLayout({
   children,
@@ -11,6 +11,7 @@ export default function RootLayout({
 }) {
   const [user, setUser] = useState<string | null>(null);
   const router = useRouter();
+  const pathname = usePathname();
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -21,7 +22,7 @@ export default function RootLayout({
   // refresh user state whenever the path changes or storage is updated
   useEffect(() => {
     setUser(localStorage.getItem("user"));
-  }, [router.pathname]);
+  }, [pathname]);
 
   useEffect(() => {
     const update = () => setUser(localStorage.getItem("user"));
