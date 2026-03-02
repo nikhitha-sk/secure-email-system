@@ -75,20 +75,18 @@ export default function Register() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[calc(100vh-200px)] animate-fade-in">
       <div className="w-full max-w-sm">
-        {/* Header */}
         <div className="flex flex-col items-center mb-8">
           <div className="w-10 h-10 flex items-center justify-center rounded-xl bg-accent-muted text-accent mb-4">
             <ShieldIcon className="w-5 h-5" />
           </div>
           <h1 className="text-xl font-semibold text-foreground mb-1">
-            Create your account
+            Create account
           </h1>
           <p className="text-sm text-muted-foreground">
-            RSA keys will be generated automatically
+            RSA keys are generated on signup
           </p>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleRegister} className="space-y-4">
           {error && (
             <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-sm text-destructive">
@@ -98,14 +96,14 @@ export default function Register() {
 
           <div>
             <label htmlFor="name" className="block text-xs font-medium text-muted-foreground mb-1.5">
-              Full name
+              Name
             </label>
             <div className="relative">
               <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
               <input
                 id="name"
                 type="text"
-                placeholder="John Doe"
+                placeholder="Full name"
                 value={form.name}
                 className="!pl-10"
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -117,14 +115,14 @@ export default function Register() {
 
           <div>
             <label htmlFor="email" className="block text-xs font-medium text-muted-foreground mb-1.5">
-              Email address
+              Email
             </label>
             <div className="relative">
               <MailIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
               <input
                 id="email"
                 type="email"
-                placeholder="you@example.com"
+                placeholder="Email"
                 value={form.email}
                 className="!pl-10"
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
@@ -143,7 +141,7 @@ export default function Register() {
               <input
                 id="password"
                 type="password"
-                placeholder="Create a strong password"
+                placeholder="Password"
                 value={form.password}
                 className="!pl-10"
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
@@ -158,28 +156,11 @@ export default function Register() {
             disabled={loading}
             className="w-full py-2.5 rounded-lg bg-accent text-accent-foreground text-sm font-medium hover:bg-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? "Creating account..." : "Create account"}
+            {loading ? "Creating..." : "Create account"}
           </button>
         </form>
 
-        {/* Features hint */}
-        <div className="mt-6 flex items-center gap-4 justify-center text-xs text-muted-foreground">
-          <span className="flex items-center gap-1">
-            <span className="w-1 h-1 rounded-full bg-accent" />
-            RSA-2048
-          </span>
-          <span className="flex items-center gap-1">
-            <span className="w-1 h-1 rounded-full bg-accent" />
-            SHA-256
-          </span>
-          <span className="flex items-center gap-1">
-            <span className="w-1 h-1 rounded-full bg-accent" />
-            Digital Signatures
-          </span>
-        </div>
-
-        {/* Footer */}
-        <p className="mt-4 text-center text-sm text-muted-foreground">
+        <p className="mt-6 text-center text-sm text-muted-foreground">
           Already have an account?{" "}
           <Link href="/login" className="text-accent hover:text-accent/80 font-medium transition-colors">
             Sign in
