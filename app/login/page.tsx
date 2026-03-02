@@ -101,7 +101,7 @@ export default function Login() {
                 type="email"
                 placeholder="you@example.com"
                 value={form.email}
-                className="pl-10"
+                className="!pl-10"
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 required
                 autoComplete="email"
@@ -120,7 +120,7 @@ export default function Login() {
                 type="password"
                 placeholder="Enter your password"
                 value={form.password}
-                className="pl-10"
+                className="!pl-10"
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
                 required
                 autoComplete="current-password"

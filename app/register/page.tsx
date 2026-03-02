@@ -107,7 +107,7 @@ export default function Register() {
                 type="text"
                 placeholder="John Doe"
                 value={form.name}
-                className="pl-10"
+                className="!pl-10"
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 required
                 autoComplete="name"
@@ -126,7 +126,7 @@ export default function Register() {
                 type="email"
                 placeholder="you@example.com"
                 value={form.email}
-                className="pl-10"
+                className="!pl-10"
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 required
                 autoComplete="email"
@@ -145,7 +145,7 @@ export default function Register() {
                 type="password"
                 placeholder="Create a strong password"
                 value={form.password}
-                className="pl-10"
+                className="!pl-10"
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
                 required
                 autoComplete="new-password"
