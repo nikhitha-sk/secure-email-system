@@ -11,10 +11,7 @@ interface DecryptTextProps {
 
 export default function DecryptText({ text }: DecryptTextProps) {
   const [display, setDisplay] = useState<string>(
-    // start with blanks or random chars
-    Array(text.length)
-      .fill("")
-      .join("")
+    Array(text.length).fill("").join("")
   );
 
   useEffect(() => {
@@ -26,9 +23,7 @@ export default function DecryptText({ text }: DecryptTextProps) {
       const shown = text.slice(0, reveal);
       const rest = Array(len - reveal)
         .fill(null)
-        .map(
-          () => CHARSET[Math.floor(Math.random() * CHARSET.length)]
-        )
+        .map(() => CHARSET[Math.floor(Math.random() * CHARSET.length)])
         .join("");
       setDisplay(shown + rest);
 
@@ -40,5 +35,7 @@ export default function DecryptText({ text }: DecryptTextProps) {
     return () => clearInterval(interval);
   }, [text]);
 
-  return <span className="font-mono">{display}</span>;
+  return (
+    <span className="font-mono text-sm text-foreground/80">{display}</span>
+  );
 }
