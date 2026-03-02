@@ -24,6 +24,8 @@ export default function Login() {
 
     if (data.message) {
       localStorage.setItem("user", form.email);
+      // notify layout/navigation about the change
+      window.dispatchEvent(new Event("userChange"));
 
       alert("Login Successful");
 

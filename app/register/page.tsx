@@ -32,16 +32,16 @@ export default function Register() {
   };
 
   return (
-    <div className="flex justify-center mt-20">
-      <div className="bg-white p-8 shadow-md rounded w-96">
-        <h2 className="text-2xl font-bold mb-6 text-center">
-          Register
+    <div className="flex justify-center items-center mt-24">
+      <div className="card w-96">
+        <h2 className="text-2xl font-bold text-center mb-6">
+          Secure Register
         </h2>
 
         <input
           type="text"
           placeholder="Name"
-          className="w-full border p-2 mb-4 rounded"
+          className="w-full mb-4"
           onChange={(e) =>
             setForm({ ...form, name: e.target.value })
           }
@@ -50,7 +50,7 @@ export default function Register() {
         <input
           type="email"
           placeholder="Email"
-          className="w-full border p-2 mb-4 rounded"
+          className="w-full mb-4"
           onChange={(e) =>
             setForm({ ...form, email: e.target.value })
           }
@@ -59,7 +59,7 @@ export default function Register() {
         <input
           type="password"
           placeholder="Password"
-          className="w-full border p-2 mb-4 rounded"
+          className="w-full mb-6"
           onChange={(e) =>
             setForm({ ...form, password: e.target.value })
           }
@@ -67,7 +67,7 @@ export default function Register() {
 
         <button
           onClick={handleRegister}
-          className="w-full bg-red-500 text-white py-2 rounded hover:bg-red-600"
+          className="w-full bg-blue-600 hover:bg-blue-700 py-2 rounded"
         >
           Register
         </button>

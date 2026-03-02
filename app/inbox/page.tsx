@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import DecryptText from "@/components/DecryptText";
 
 export default function Inbox() {
   const [emails, setEmails] = useState<any[]>([]);
@@ -46,8 +47,8 @@ export default function Inbox() {
             From: {mail.from}
           </p>
 
-          <p className="fade-decrypt">
-            {mail.message}
+          <p>
+            <DecryptText text={mail.message} />
           </p>
 
           {!mail.seen && (
