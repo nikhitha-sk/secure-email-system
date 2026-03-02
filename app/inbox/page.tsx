@@ -6,7 +6,9 @@ export default function Inbox() {
   const [emails, setEmails] = useState<any[]>([]);
 
   const fetchEmails = async () => {
-    const res = await fetch("/api/emails");
+    const logged = localStorage.getItem("user");
+    if (!logged) return;
+    const res = await fetch(`/api/emails?to=${encodeURIComponent(logged)}`);
     const data = await res.json();
     setEmails(data);
   };
