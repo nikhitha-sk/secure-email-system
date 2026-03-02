@@ -35,46 +35,54 @@ export default function Inbox() {
     <div className="max-w-3xl mx-auto">
       <h1 className="text-2xl mb-6">Inbox</h1>
 
-      {inboxEmails.map((mail) => (
-        <div
-          key={mail._id}
-          className={`card mb-4 ${
-            !mail.seen ? "new-mail" : ""
-          }`}
-        >
-          <div className="flex justify-between">
-            <h2 className="font-semibold">{mail.subject}</h2>
-            <span className="text-sm text-gray-400">
-              {new Date(mail.createdAt).toLocaleTimeString()}
-            </span>
+      {/* received messages */}
+      <section className="space-y-4">
+        {inboxEmails.map((mail) => (
+          <div
+            key={mail._id}
+            className={`card inbox-card mb-4 animate-slide-in ${
+              mail.seen ? "seen-mail" : ""} ${
+              !mail.seen ? "new-mail" : ""
+            }`}
+          >
+            <div className="flex justify-between">
+              <h2 className="font-semibold">{mail.subject}</h2>
+              <span className="text-sm text-gray-400">
+                {new Date(mail.createdAt).toLocaleTimeString()}
+              </span>
+            </div>
+
+            <p className="text-sm text-gray-400 mb-2">
+              From: {mail.from}
+            </p>
+
+            <p>
+              <DecryptText text={mail.message} />
+            </p>
+
+            {!mail.seen && (
+              <button
+                onClick={() => markSeen(mail._id)}
+                className="mt-3 text-blue-400"
+              >
+                Mark as Seen
+              </button>
+            )}
           </div>
+        ))}
+      </section>
 
-          <p className="text-sm text-gray-400 mb-2">
-            From: {mail.from}
-          </p>
-
-          <p>
-            <DecryptText text={mail.message} />
-          </p>
-
-          {!mail.seen && (
-            <button
-              onClick={() => markSeen(mail._id)}
-              className="mt-3 text-blue-400"
-            >
-              Mark as Seen
-            </button>
-          )}
-        </div>
-      ))}
-
+      {/* sent messages */}
       {sentEmails.length > 0 && (
-        <div className="mt-12">
-          <h2 className="text-xl mb-4 text-yellow-300">Sent Mail</h2>
+        <section className="mt-12 space-y-4">
+          <h2 className="text-xl mb-4 text-yellow-300">
+            Sent Mail
+          </h2>
           {sentEmails.map((mail) => (
             <div
               key={mail._id}
-              className="card mb-4 bg-gray-800 text-gray-300">
+              className={`card sent-card mb-4 animate-slide-in ${
+              mail.seen ? "seen-mail" : ""} `}>
               <div className="flex justify-between">
                 <h2 className="font-semibold">{mail.subject}</h2>
                 <span className="text-sm text-gray-500">
@@ -91,7 +99,7 @@ export default function Inbox() {
               </p>
             </div>
           ))}
-        </div>
+        </section>
       )}
     </div>
   );
