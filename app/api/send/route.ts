@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import Email from "@/models/Email";
 import User from "@/models/User";
-import { createHash } from "@/lib/hash";
 import { signMessage } from "@/lib/signature";
 
 export async function POST(req: Request) {
@@ -14,8 +13,15 @@ export async function POST(req: Request) {
 
   const sender = await User.findOne({ email: senderEmail });
 
-  const hash = createHash(message);
-  const signature = signMessage(hash, sender.privateKey);
+  // Create canonical payload for signing (includes all message fields)
+  const canonicalPayload = JSON.stringify({
+    from: senderEmail,
+    to,
+    subject,
+    message,
+  });
+
+  const signature = signMessage(canonicalPayload, sender.privateKey);
 
   await Email.create({
     from: senderEmail,

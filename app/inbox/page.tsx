@@ -28,6 +28,25 @@ function CheckIcon({ className }: { className?: string }) {
   );
 }
 
+function ShieldCheckIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      <path d="m9 12 2 2 4-4" />
+    </svg>
+  );
+}
+
+function ShieldAlertIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      <line x1="12" y1="9" x2="12" y2="13" />
+      <line x1="12" y1="17" x2="12.01" y2="17" />
+    </svg>
+  );
+}
+
 function EmptyInboxIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
@@ -45,6 +64,7 @@ interface EmailItem {
   message: string;
   seen: boolean;
   createdAt: string;
+  integrity?: "valid" | "invalid" | "error" | "unknown";
 }
 
 export default function Inbox() {
@@ -52,6 +72,7 @@ export default function Inbox() {
   const [sentEmails, setSentEmails] = useState<EmailItem[]>([]);
   const [activeTab, setActiveTab] = useState<"inbox" | "sent">("inbox");
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [tamperingId, setTamperingId] = useState<string | null>(null);
 
   const fetchEmails = async () => {
     const logged = localStorage.getItem("user");
@@ -76,6 +97,20 @@ export default function Inbox() {
       body: JSON.stringify({ id }),
     });
     fetchEmails();
+  };
+
+  const simulateTamper = async (id: string) => {
+    setTamperingId(id);
+    try {
+      await fetch("/api/emails", {
+        method: "PUT",
+        body: JSON.stringify({ id }),
+      });
+      // Refresh to show the tampered message and failed signature
+      fetchEmails();
+    } finally {
+      setTamperingId(null);
+    }
   };
 
   const unreadCount = inboxEmails.filter((m) => !m.seen).length;
@@ -213,22 +248,61 @@ export default function Inbox() {
                 {/* Expanded Content */}
                 {isExpanded && (
                   <div className="px-4 pb-4 pl-[4.5rem] border-t border-border pt-3 animate-fade-in">
+                    {/* Integrity Status Badge */}
+                    <div className="mb-3 flex items-center gap-2">
+                      {mail.integrity === "valid" && (
+                        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300">
+                          <ShieldCheckIcon className="w-3.5 h-3.5" />
+                          Signature Verified
+                        </div>
+                      )}
+                      {mail.integrity === "invalid" && (
+                        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300">
+                          <ShieldAlertIcon className="w-3.5 h-3.5" />
+                          Message Integrity Failed - Possible Tampering
+                        </div>
+                      )}
+                      {mail.integrity === "error" && (
+                        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-yellow-50 text-yellow-700 dark:bg-yellow-950 dark:text-yellow-300">
+                          <ShieldAlertIcon className="w-3.5 h-3.5" />
+                          Could Not Verify Signature
+                        </div>
+                      )}
+                    </div>
+
                     <div className="mb-3">
                       <DecryptText text={mail.message} />
                     </div>
 
-                    {isNew && (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          markSeen(mail._id);
-                        }}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium text-accent hover:bg-accent-muted transition-colors"
-                      >
-                        <CheckIcon className="w-3.5 h-3.5" />
-                        Mark as read
-                      </button>
-                    )}
+                    <div className="flex flex-wrap items-center gap-2">
+                      {isNew && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            markSeen(mail._id);
+                          }}
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium text-accent hover:bg-accent-muted transition-colors"
+                        >
+                          <CheckIcon className="w-3.5 h-3.5" />
+                          Mark as read
+                        </button>
+                      )}
+
+                      {/* Dev-only Tamper Button */}
+                      {process.env.NODE_ENV !== "production" && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            simulateTamper(mail._id);
+                          }}
+                          disabled={tamperingId === mail._id}
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          <ShieldAlertIcon className="w-3.5 h-3.5" />
+                          {tamperingId === mail._id ? "Tampering..." : "Simulate Tamper"}
+                        </button>
+                      )}
+                    </div>
                   </div>
                 )}
               </div>

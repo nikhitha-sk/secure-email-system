@@ -1,19 +1,24 @@
 import crypto from "crypto";
 
-export function signMessage(hash: string, privateKey: string) {
+export function signMessage(payload: string, privateKey: string) {
   return crypto
-    .privateEncrypt(privateKey, Buffer.from(hash))
+    .sign("sha256", Buffer.from(payload), privateKey)
     .toString("base64");
 }
 
 export function verifySignature(
-  hash: string,
+  payload: string,
   signature: string,
   publicKey: string
 ) {
-  const decrypted = crypto
-    .publicDecrypt(publicKey, Buffer.from(signature, "base64"))
-    .toString();
-
-  return decrypted === hash;
+  try {
+    return crypto.verify(
+      "sha256",
+      Buffer.from(payload),
+      publicKey,
+      Buffer.from(signature, "base64")
+    );
+  } catch {
+    return false;
+  }
 }
